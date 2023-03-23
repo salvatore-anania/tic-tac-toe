@@ -3,199 +3,203 @@ import time
 
 def ia(board,signe):
     seed(time.time())
+    find=False
+    priority={"case_column1":0,"case_column2":0,"case_column3":0,"case_diag1":0,"case_diag2":0,"case_line1":0,"case_line2":0,"case_line3":0}
+    selection={"column1":[],"column2":[],"column3":[],"diagonal1":[],"diagonal2":[],"line1":[],"line2":[],"line3":[]}
+    case_count={"column1":0,"column2":0,"column3":0,"diagonal1":0,"diagonal2":0,"line1":0,"line2":0,"line3":0}
     to_play=[]
     egalite=[]
-    column1_selection=[]
-    column2_selection=[]
-    column3_selection=[]
-    case_column1=0
-    case_column2=0
-    case_column3=0
-    diagonal1_selection=[]
-    diagonal2_selection=[]
-    case_diag1=0
-    case_diag2=0
-    case_line1=0
-    case_line2=0
-    case_line3=0
-    case_column_priority1=0
-    case_column_priority2=0
-    case_column_priority3=0
-    case_diag_priority1=0
-    case_diag_priority2=0
-    case_line_priority1=0
-    case_line_priority2=0
-    case_line_priority3=0
-    line1_selection=[]
-    line2_selection=[]
-    line3_selection=[]
+    max=0
     
     for i in range(len(board)):
         if board[i]==0:
             egalite.append(i)
     
     for i in range(len(board)):
-        
+        print(i)
         if i%4==0:
             
             if board[i]==0:
-                case_diag1+=1
-                diagonal1_selection.append(i)
+                case_count["diagonal1"]+=1
+                selection["diagonal1"].append(i)
             elif board[i]==1:
-                case_diag1+=1
-                case_diag_priority1-=10
+                case_count["diagonal1"]+=2
+                priority["case_diag1"]-=20
             elif board[i]==2:
-                case_diag_priority1+=1   
+                case_count["diagonal1"]-=2
+                priority["case_diag1"]+=1   
         if i%2==0 and i>0 and i<8 :
             
             if board[i]==0:
-                case_diag2+=1
-                diagonal2_selection.append(i)
+                case_count["diagonal2"]+=1
+                selection["diagonal2"].append(i)
             elif board[i]==1:
-                case_diag2+=1
-                case_diag_priority2-=10
+                case_count["diagonal2"]+=2
+                priority["case_diag2"]-=20
             elif board[i]==2:
-                case_diag_priority2+=1
+                case_count["diagonal2"]-=2
+                priority["case_diag2"]+=1
         
         if i<3:
             
             if board[i]==0:
-                case_line1+=1
-                line1_selection.append(i)
+                case_count["line1"]+=1
+                selection["line1"].append(i)
             elif board[i]==1:
-                case_line1+=1
-                case_line_priority1-=10
+                case_count["line1"]+=2
+                priority["case_line1"]-=20
             elif board[i]==2:
-                case_line_priority1+=1
+                case_count["line1"]-=2
+                priority["case_line1"]+=1
         if i>=3 and i<6:
             
             if board[i]==0:
-                case_line2+=1
-                line2_selection.append(i)
+                case_count["line2"]+=1
+                selection["line2"].append(i)
             elif board[i]==1:
-                case_line2+=1
-                case_line_priority2-=10
+                case_count["line2"]+=2
+                priority["case_line2"]-=20
             elif board[i]==2:
-                case_line_priority2+=1
+                case_count["line2"]-=2
+                priority["case_line2"]+=1
         if i>=6 and i<9:
             
             if board[i]==0:
-                case_line3+=1
-                line3_selection.append(i)
+                case_count["line3"]+=1
+                selection["line3"].append(i)
             elif board[i]==1:
-                case_line3+=1
-                case_line_priority3-=10
+                case_count["line3"]+=2
+                priority["case_line3"]-=20
             elif board[i]==2:
-                case_line_priority3+=1
+                case_count["line3"]-=2
+                priority["case_line3"]+=1
+                
+        #verifie les colones
         
         if i%3==0:
             
             if board[i]==0:
-                case_column1+=1
-                column1_selection.append(i) 
+                case_count["column1"]+=1
+                selection["column1"].append(i) 
             if board[i]==1:
-                case_column1+=1
-                case_column_priority1-=10
+                case_count["column1"]+=2
+                priority["case_column1"]-=20
             if board[i]==2:
-                case_column_priority1+=1       
-        if i%3==1:
-            
+                case_count["column1"]-=2
+                priority["case_column1"]+=1
+        if i%3==1:  
             if board[i]==0:
-                case_column2+=1
-                column2_selection.append(i)
+                print("alors") 
+                case_count["column2"]+=1
+                selection["column2"].append(i)
             if board[i]==1:
-                case_column2+=1
-                case_column_priority2-=10
+                print("alors") 
+                case_count["column2"]+=2
+                priority["case_column2"]-=20
             if board[i]==2:
-                case_column_priority2+=1  
+                print("test")
+                case_count["column2"]-=2
+                priority["case_column2"]+=1  
         if i%3==2:
             
             if board[i]==0:
-                case_column3+=1
-                column3_selection.append(i)
+                case_count["column3"]+=1
+                selection["column3"].append(i)
             if board[i]==1:
-                case_column3+=1
-                case_column_priority3-=10
+                case_count["column3"]+=2
+                priority["case_column3"]-=20
             if board[i]==2:
-                case_column_priority3+=1
+                case_count["column3"]-=2
+                priority["case_column3"]+=1
             
-        if case_column1==3:
-            to_play=column1_selection
-            if len(column1_selection)==1:
-                break
-        elif case_column2==3:
-            to_play=column2_selection
-            if len(column2_selection)==1:
-                break
-        elif case_column3==3:
-            to_play=column3_selection 
-            if len(column3_selection)==1:
-                break 
-
-                
-        if case_diag1==3:
-            to_play=diagonal1_selection
-            if len(diagonal1_selection)==1:
-                break 
-        elif case_diag2==3:
-            to_play=diagonal2_selection
-            if len(diagonal2_selection)==1:
-                break
+        for i in case_count.values():
+            if i>max:
+                max=i
+            
+        if case_count["diagonal1"]>3:
+            for i in case_count.keys():
+                if case_count["diagonal1"]>=max:
+                    to_play=selection["diagonal1"]
+                if case_count["diagonal1"]==4 and case_count["diagonal2"]==4 and 2 not in priority.values():
+                    to_play=selection["diagonal1"]
+                    print("break")
+                    break
+        if case_count["diagonal2"]>3:
+            for i in case_count.keys():
+                if case_count["diagonal2"]>=max:
+                    to_play=selection["diagonal2"]
+                    
+            
+        if case_count["column1"]>3:
+            for i in case_count.keys():
+                if case_count["column1"]>=max:
+                    to_play=selection["column1"]
+        if case_count["column2"]>3:
+            for i in case_count.keys():
+                if case_count["column2"]>=max:
+                    to_play=selection["column2"]
+        if case_count["column3"]>3:
+            for i in case_count.keys():
+                if case_count["column3"]>=max:
+                    to_play=selection["column3"]
+    
         
-        if case_line1==3:
-            to_play=line1_selection
-            if len(line1_selection)==1:
-                break
-        elif case_line2==3:
-            to_play=line2_selection
-            if len(line2_selection)==1:
-                break
-        elif case_line3==3:
-            to_play=line3_selection
-            if len(line3_selection)==1:
-                break
-            
-        if case_column_priority1==2:
-            to_play=column1_selection
-            if case_column1==3:
-                break
-        elif case_column_priority2==2:
-            to_play=column2_selection
-            if case_column2==3:
-                break
-        elif case_column_priority3==2:
-            to_play=column3_selection
-            if case_column3==3:
-                break
+        if case_count["line1"]>3:
+            for i in case_count.keys():
+                if case_count["line1"]>=max:
+                    to_play=selection["line1"]
+        if case_count["line2"]>3:
+            for i in case_count.keys():
+                if case_count["line2"]>=max:
+                    to_play=selection["line2"]
+        if case_count["line3"]>3:
+            for i in case_count.keys():
+                if case_count["line3"]>=max:
+                    to_play=selection["line3"]
+
+
+
+
+        if priority["case_column1"]==2 and 5 not in case_count.values():
+            to_play=selection["column1"]
+        if priority["case_column2"]==2 and 5 not in case_count.values():
+            to_play=selection["column2"]
+        if priority["case_column3"]==2 and 5 not in case_count.values():
+            to_play=selection["column3"]
                 
 
                 
-        if case_diag_priority1==2:
-            to_play=diagonal1_selection
-            if case_diag1==3:
-                break 
-        elif case_diag_priority2==2:
-            to_play=diagonal2_selection
-            if case_diag2==3:
-                break
+        if priority["case_diag1"]==2 and 5 not in case_count.values():
+            to_play=selection["diagonal1"]
+        if priority["case_diag2"]==2 and 5 not in case_count.values():
+            to_play=selection["diagonal2"]
             
         
-        if case_line_priority1==2:
-            to_play=line1_selection
-            if case_line1==3:
-                break
-        elif case_line_priority2==2:
-            to_play=line2_selection
-            if case_line2==3:
-                break
-        elif case_line_priority3==2:
-            to_play=line3_selection
-            if case_line3==3:
-                break
+        if priority["case_line1"]==2 and 5 not in case_count.values():
+            to_play=selection["line1"]
+            
+        if priority["case_line2"]==2 and 5 not in case_count.values():
+            to_play=selection["line2"]
+            
+        if priority["case_line3"]==2 and 5 not in case_count.values():
+            to_play=selection["line3"]
+            
 
+    print(case_count,to_play)
 
     
     if len(to_play):
+        if 0 in to_play:
+            return 0
+        elif 2 in to_play:
+            return 2
+        elif 6 in to_play:
+            return 6
+        elif 8 in to_play:
+            return 8
         return choice(to_play)
     else:
+        print("hello")
+        if len(egalite)==9:
+            return choice((0,2,6,8))
         return choice(egalite)
