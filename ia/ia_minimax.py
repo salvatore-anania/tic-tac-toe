@@ -33,7 +33,6 @@ def minimax(plateau, signe_actuel,signe_gagnant,depth):
 def ia(board,signe):
     play_move=-50
     move=0
-    print(signe)
     for i in range(len(board)):
         if board[i] ==0:
             board[i]=signe
@@ -42,11 +41,9 @@ def ia(board,signe):
             else:
                 best_move=minimax(board,signe-1,signe,0)
             board[i]=0
-            print(best_move)
             if best_move>play_move:
                 play_move=best_move
                 move=i
-    print("------------------------")
     return move
                 
     
