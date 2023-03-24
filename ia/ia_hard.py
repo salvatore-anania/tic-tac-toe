@@ -3,7 +3,6 @@ import time
 
 def ia(board,signe):
     seed(time.time())
-    find=False
     priority={"case_column1":0,"case_column2":0,"case_column3":0,"case_diag1":0,"case_diag2":0,"case_line1":0,"case_line2":0,"case_line3":0}
     selection={"column1":[],"column2":[],"column3":[],"diagonal1":[],"diagonal2":[],"line1":[],"line2":[],"line3":[]}
     case_count={"column1":0,"column2":0,"column3":0,"diagonal1":0,"diagonal2":0,"line1":0,"line2":0,"line3":0}
@@ -16,16 +15,16 @@ def ia(board,signe):
             egalite.append(i)
     
     for i in range(len(board)):
-        print(i)
+        
         if i%4==0:
             
             if board[i]==0:
                 case_count["diagonal1"]+=1
                 selection["diagonal1"].append(i)
-            elif board[i]==1:
+            elif board[i]==signe:
                 case_count["diagonal1"]+=2
                 priority["case_diag1"]-=20
-            elif board[i]==2:
+            else:
                 case_count["diagonal1"]-=2
                 priority["case_diag1"]+=1   
         if i%2==0 and i>0 and i<8 :
@@ -33,10 +32,10 @@ def ia(board,signe):
             if board[i]==0:
                 case_count["diagonal2"]+=1
                 selection["diagonal2"].append(i)
-            elif board[i]==1:
+            elif board[i]==signe:
                 case_count["diagonal2"]+=2
                 priority["case_diag2"]-=20
-            elif board[i]==2:
+            else:
                 case_count["diagonal2"]-=2
                 priority["case_diag2"]+=1
         
@@ -45,10 +44,10 @@ def ia(board,signe):
             if board[i]==0:
                 case_count["line1"]+=1
                 selection["line1"].append(i)
-            elif board[i]==1:
+            elif board[i]==signe:
                 case_count["line1"]+=2
                 priority["case_line1"]-=20
-            elif board[i]==2:
+            else:
                 case_count["line1"]-=2
                 priority["case_line1"]+=1
         if i>=3 and i<6:
@@ -56,10 +55,10 @@ def ia(board,signe):
             if board[i]==0:
                 case_count["line2"]+=1
                 selection["line2"].append(i)
-            elif board[i]==1:
+            elif board[i]==signe:
                 case_count["line2"]+=2
                 priority["case_line2"]-=20
-            elif board[i]==2:
+            else:
                 case_count["line2"]-=2
                 priority["case_line2"]+=1
         if i>=6 and i<9:
@@ -67,10 +66,10 @@ def ia(board,signe):
             if board[i]==0:
                 case_count["line3"]+=1
                 selection["line3"].append(i)
-            elif board[i]==1:
+            elif board[i]==signe:
                 case_count["line3"]+=2
                 priority["case_line3"]-=20
-            elif board[i]==2:
+            else:
                 case_count["line3"]-=2
                 priority["case_line3"]+=1
                 
@@ -81,23 +80,20 @@ def ia(board,signe):
             if board[i]==0:
                 case_count["column1"]+=1
                 selection["column1"].append(i) 
-            if board[i]==1:
+            elif board[i]==signe:
                 case_count["column1"]+=2
                 priority["case_column1"]-=20
-            if board[i]==2:
+            else:
                 case_count["column1"]-=2
                 priority["case_column1"]+=1
         if i%3==1:  
             if board[i]==0:
-                print("alors") 
                 case_count["column2"]+=1
                 selection["column2"].append(i)
-            if board[i]==1:
-                print("alors") 
+            elif board[i]==signe:
                 case_count["column2"]+=2
                 priority["case_column2"]-=20
-            if board[i]==2:
-                print("test")
+            else:
                 case_count["column2"]-=2
                 priority["case_column2"]+=1  
         if i%3==2:
@@ -105,10 +101,10 @@ def ia(board,signe):
             if board[i]==0:
                 case_count["column3"]+=1
                 selection["column3"].append(i)
-            if board[i]==1:
+            elif board[i]==signe:
                 case_count["column3"]+=2
                 priority["case_column3"]-=20
-            if board[i]==2:
+            else:
                 case_count["column3"]-=2
                 priority["case_column3"]+=1
             
@@ -122,12 +118,14 @@ def ia(board,signe):
                     to_play=selection["diagonal1"]
                 if case_count["diagonal1"]==4 and case_count["diagonal2"]==4 and 2 not in priority.values():
                     to_play=selection["diagonal1"]
-                    print("break")
                     break
         if case_count["diagonal2"]>3:
             for i in case_count.keys():
                 if case_count["diagonal2"]>=max:
                     to_play=selection["diagonal2"]
+                if case_count["diagonal1"]==4 and case_count["diagonal2"]==4 and 2 not in priority.values():
+                    to_play=selection["diagonal2"]
+                    break
                     
             
         if case_count["column1"]>3:
@@ -185,8 +183,6 @@ def ia(board,signe):
             to_play=selection["line3"]
             
 
-    print(case_count,to_play)
-
     
     if len(to_play):
         if 0 in to_play:
@@ -199,7 +195,6 @@ def ia(board,signe):
             return 8
         return choice(to_play)
     else:
-        print("hello")
-        if len(egalite)==9:
+        if len(egalite)>=8:
             return choice((0,2,6,8))
         return choice(egalite)

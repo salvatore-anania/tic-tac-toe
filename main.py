@@ -2,6 +2,7 @@ import pygame as pg
 import ia.ia_hard
 import ia.ia_multichoice
 import ia.ia_random
+import ia.ia_minimax
 import json
 from time import sleep
 
@@ -31,29 +32,46 @@ def test_win(croix,cercle):
         
         play_game=False
         if choose==1:
-            txt_surface = font.render(first_user+" à gagné !", True, color)
-            screen.blit(txt_surface, (400- (txt_surface.get_width()/2), 10))
             battle_save(first_user,username)
-        elif choose==2:
+            histo=lire_histo(first_user,username)
+            txt_surface = font.render(first_user+" à gagné !", True, color)
+            txt_surface2 = font.render(str(histo[0][0])+" "+first_user+" VS "+username+" "+str(histo[0][1]), True, color)
+            screen.blit(txt_surface, (400- (txt_surface.get_width()/2), 10))
+            screen.blit(txt_surface2, (400- (txt_surface2.get_width()/2), 70))
+        elif choose==2 and beginning==1:
             txt_surface = font.render("L'ordinateur à gagné !", True, color)
             txt_surface2 = font.render("Score : -100", True, color)
             screen.blit(txt_surface, (400- (txt_surface.get_width()/2), 10))
             screen.blit(txt_surface2, (400- (txt_surface2.get_width()/2), 70))
             score_save(first_user,False)
-    elif test_win_cercle:
-        screen.blit(rejouer,(0,0))
-        play_game=False
-        if choose==2:
+        elif choose==2 and beginning==2:
             txt_surface = font.render("Vous avez gagné !", True, color)
             txt_surface2 = font.render("Score : +100", True, color)
             screen.blit(txt_surface, (400- (txt_surface.get_width()/2), 10))
             screen.blit(txt_surface2, (400- (txt_surface2.get_width()/2), 70))
             score_save(first_user,True)
-        elif choose==1:
-            txt_surface = font.render(username+" à gagné !", True, color)
+    elif test_win_cercle:
+        screen.blit(rejouer,(0,0))
+        play_game=False
+        if choose==2 and beginning==1:
+            txt_surface = font.render("Vous avez gagné !", True, color)
+            txt_surface2 = font.render("Score : +100", True, color)
             screen.blit(txt_surface, (400- (txt_surface.get_width()/2), 10))
+            screen.blit(txt_surface2, (400- (txt_surface2.get_width()/2), 70))
+            score_save(first_user,True)
+        elif choose==2 and beginning==2:
+            txt_surface = font.render("l'ordinateur gagné !", True, color)
+            txt_surface2 = font.render("Score : -100", True, color)
+            screen.blit(txt_surface, (400- (txt_surface.get_width()/2), 10))
+            screen.blit(txt_surface2, (400- (txt_surface2.get_width()/2), 70))
+            score_save(first_user,False)
+        elif choose==1:
             battle_save(username,first_user)
-            
+            histo=lire_histo(first_user,username)
+            txt_surface = font.render(username+" à gagné !", True, color)
+            txt_surface2 = font.render(str(histo[0][0])+" "+first_user+" VS "+username+" "+str(histo[0][1]), True, color)
+            screen.blit(txt_surface, (400- (txt_surface.get_width()/2), 10))
+            screen.blit(txt_surface2, (400- (txt_surface2.get_width()/2), 70))     
     elif len(cercle)>4 or len(croix)>4 :
         screen.blit(rejouer,(0,0))
         screen.blit(egalite,(0,0))
@@ -70,11 +88,12 @@ def test_click_position(x,y):
     return(0,0)
 
 def menu_back():
-    global cercle_save,croix_save,signe_save,play_game,board,choose,username,second_user,connect,first_user
+    global cercle_save,croix_save,signe_save,play_game,board,choose,username,second_user,connect,first_user,beginning
     if event.type == pg.MOUSEBUTTONDOWN:
         if pg.mouse.get_pos()[0] in range(253,571) and pg.mouse.get_pos()[1] in range(150,225):
             second_user=True
             play_game=True
+            beginning=0
             cercle_save=[]
             croix_save=[]
             signe_save=1
@@ -87,6 +106,7 @@ def menu_back():
             second_user=False
             cercle_save=[]
             croix_save=[]
+            beginning=0
             signe_save=1
             board=[]
             screen.fill((0,0,0))
@@ -99,6 +119,7 @@ def menu_back():
             second_user=False
             cercle_save=[]
             croix_save=[]
+            beginning=0
             signe_save=1
             board=[]
             screen.fill((0,0,0))
@@ -269,25 +290,26 @@ def connected_play():
         screen.blit(name, (400-(name.get_width()/2) , 10))
         screen.blit(score, (450+(name.get_width()/2) , 10))
     else:
-        battle_info=lire_battle()
-        if first_user+" VS "+username in battle_info.keys():
-            font = pg.font.SysFont("calibri", 32, bold=True)
-            name1 = font.render("X "+first_user+" : "+str(battle_info[first_user+" VS "+username][0]), True, color)
-            contre = font.render("contre", True, color)
-            name2 = font.render("O "+username+" : "+str(battle_info[first_user+" VS "+username][1]), True, color)
-        elif username+" VS "+first_user in battle_info.keys():
-            font = pg.font.SysFont("calibri", 32, bold=True)
-            name1 = font.render("X "+first_user+" : "+str(battle_info[username+" VS "+first_user][1]), True, color)
-            contre = font.render("contre", True, color)
-            name2 = font.render("O "+username+" : "+str(battle_info[username+" VS "+first_user][0]), True, color)
+        battle_info=lire_histo(first_user,username)
+        if battle_info:
+            if first_user+" VS "+username==battle_info[1]:
+                font = pg.font.SysFont("calibri", 32, bold=True)
+                name1 = font.render("X "+first_user+" : "+str(battle_info[0][0]), True, color)
+                contre = font.render("contre", True, color)
+                name2 = font.render("O "+username+" : "+str(battle_info[0][1]), True, color)
+            elif username+" VS "+first_user==battle_info[1]:
+                font = pg.font.SysFont("calibri", 32, bold=True)
+                name1 = font.render("X "+first_user+" : "+str(battle_info[0][1]), True, color)
+                contre = font.render("contre", True, color)
+                name2 = font.render("O "+username+" : "+str(battle_info[0][0]), True, color)
         else:
             battle_save(first_user,username)
-            battle_info=lire_battle()
+            battle_info=lire_histo(first_user,username)
             
             font = pg.font.SysFont("calibri", 32, bold=True)
-            name1 = font.render("X "+first_user+" : "+str(battle_info[first_user+" VS "+username][0]), True, color)
+            name1 = font.render("X "+first_user+" : "+str(battle_info[0][0]), True, color)
             contre = font.render("contre", True, color)
-            name2 = font.render("O "+username+" : "+str(battle_info[first_user+" VS "+username][1]), True, color)
+            name2 = font.render("O "+username+" : "+str(battle_info[0][1]), True, color)
         screen.blit(name1, (50 , 10))
         screen.blit(contre, (400-(contre.get_width()/2), 10))
         screen.blit(name2, (750-name2.get_width() , 10))
@@ -297,10 +319,21 @@ def lire():
         test=json.load(affiche)
     return test
 
-def lire_battle():
-    with open("data_battle.json", "r") as affiche:
-        test=json.load(affiche)
-    return test
+def lire_histo(user1,user2):
+    try:
+        open("data_battle.json", "x")
+    except:
+        ecrire=0  
+    ecrire=open("data_battle.json", "r+")
+    try:
+        donnes=json.load(ecrire)
+    except:
+        ecrire.write("{\""+user1+" VS "+user2+"[0,0]}")
+    else:
+        if user1+" VS "+user2 in donnes.keys():
+            return [donnes[user1+" VS "+user2],user1+" VS "+user2]
+        elif user2+" VS "+user1 in donnes.keys():
+            return [donnes[user2+" VS "+user1],user2+" VS "+user1]
 
 def choose_difficulty():
     global difficulty
@@ -312,25 +345,33 @@ def choose_difficulty():
             difficulty=1
         elif pg.mouse.get_pos()[0] in range(253,571) and pg.mouse.get_pos()[1]in range(365,440):
             difficulty=2
-        
+   
+def choose_beginning():
+    global beginning
+    screen.blit(beginning_img,(0,0))
+    if event.type == pg.MOUSEBUTTONDOWN:
+        if pg.mouse.get_pos()[0] in range(253,571) and pg.mouse.get_pos()[1] in range(150,225):
+            beginning=2
+        elif pg.mouse.get_pos()[0] in range(253,571) and pg.mouse.get_pos()[1]in range(260,334):
+            beginning=1
+
     
 pg.init()
 pg.display.set_caption("tic_tac_toe")
-icon = pg.image.load("icon.png")
+icon = pg.image.load("image/icon.png")
 pg.display.set_icon(icon)
 
 screen = pg.display.set_mode((800,600))
-background=pg.image.load("Grid.png")
-cercle_win=pg.image.load("win_cercle.png")
-croix_win=pg.image.load("croix_win.png")
-egalite=pg.image.load("egalite.png")
-rejouer=pg.image.load("replay_menu.png")
-mode_choose=pg.image.load("mode_choose.png")
-connection=pg.image.load("connection.png")
-connection_second=pg.image.load("connection_second.png")
-difficulty_img=pg.image.load("difficulty.png")
-cercle_img=pg.image.load("cercle.png")
-croix_img=pg.image.load("croix.png")
+background=pg.image.load("image/Grid.png")
+egalite=pg.image.load("image/egalite.png")
+rejouer=pg.image.load("image/replay_menu.png")
+mode_choose=pg.image.load("image/mode_choose.png")
+connection=pg.image.load("image/connection.png")
+connection_second=pg.image.load("image/connection_second.png")
+difficulty_img=pg.image.load("image/difficulty.png")
+beginning_img=pg.image.load("image/beginning.png")
+cercle_img=pg.image.load("image/cercle.png")
+croix_img=pg.image.load("image/croix.png")
 
 
 grille_case=((75,55,308,221),(308,55,541,221),(541,55,750,221),(75,221,308,387),(308,221,541,387),(541,221,750,387),(75,387,308,548),(308,387,541,548),(541,387,750,548))     
@@ -341,6 +382,7 @@ difficulty=-1
 color = pg.Color((63,72,204))
 running=True
 active=False
+beginning=False
 connect=False
 second_user=False
 username = ''
@@ -383,33 +425,63 @@ while running:
                 user_set()
                 quit()
     elif choose==2:
-        if play_game and difficulty!=-1:
-            play_screen()
-            if signe_save==1 and len(cercle_save)<5 and len(croix_save)<5:
-                if difficulty==0:
-                    ia_play=ia.ia_random.ia(board,1)
-                if difficulty==1:
-                    ia_play=ia.ia_multichoice.ia(board,1)
-                if difficulty==2:
-                    ia_play=ia.ia_hard.ia(board,1)
-                board[ia_play]=1
-                croix_save.append(ia_play)
-                signe_save=2
-            else:
+        if beginning==1:
+            if play_game and difficulty!=-1:
+                play_screen()
+                if signe_save==1 and len(cercle_save)<5 and len(croix_save)<5:
+                    if difficulty==0:
+                        ia_play=ia.ia_random.ia(board,1)
+                    if difficulty==1:
+                        ia_play=ia.ia_multichoice.ia(board,1)
+                    if difficulty==2:
+                        ia_play=ia.ia_minimax.ia(board,1)
+                    board[ia_play]=1
+                    croix_save.append(ia_play)
+                    signe_save=2
+                else:
+                    for event in pg.event.get():
+                        quit()
+                        sign_position()
+                test_win(croix_save,cercle_save)
+            elif play_game==False:
+                difficulty=-1
                 for event in pg.event.get():
                     quit()
-                    sign_position()
-            test_win(croix_save,cercle_save)
-        elif play_game==False:
-            
-            difficulty=-1
+                    menu_back()
+            elif difficulty==-1:
+                for event in pg.event.get():
+                    quit()
+                    choose_difficulty()
+        elif beginning==2:
+            if play_game and difficulty!=-1:
+                play_screen()
+                if signe_save==2 and len(cercle_save)<5 and len(croix_save)<5:
+                    if difficulty==0:
+                        ia_play=ia.ia_random.ia(board,2)
+                    if difficulty==1:
+                        ia_play=ia.ia_multichoice.ia(board,2)
+                    if difficulty==2:
+                        ia_play=ia.ia_minimax.ia(board,2)
+                    board[ia_play]=2
+                    cercle_save.append(ia_play)
+                    signe_save=1
+                else:
+                    for event in pg.event.get():
+                        quit()
+                        sign_position()
+                test_win(croix_save,cercle_save)
+            elif play_game==False:
+                difficulty=-1
+                for event in pg.event.get():
+                    quit()
+                    menu_back()
+            elif difficulty==-1:
+                for event in pg.event.get():
+                    quit()
+                    choose_difficulty() 
+        elif beginning==0:
             for event in pg.event.get():
                 quit()
-                menu_back()
-        elif difficulty==-1:
-            for event in pg.event.get():
-                quit()
-                choose_difficulty() 
-                      
+                choose_beginning()             
     
     pg.display.update()
