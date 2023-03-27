@@ -4,7 +4,6 @@ import ia.ia_multichoice
 import ia.ia_random
 import ia.ia_minimax
 import json
-from time import sleep
 
 def affiche_cercle(click_save):
     for i in click_save:
@@ -434,7 +433,7 @@ while running:
                     if difficulty==1:
                         ia_play=ia.ia_multichoice.ia(board,1)
                     if difficulty==2:
-                        ia_play=ia.ia_minimax.ia(board,1)
+                        ia_play=ia.ia_hard.ia(board,1)
                     board[ia_play]=1
                     croix_save.append(ia_play)
                     signe_save=2
@@ -461,7 +460,7 @@ while running:
                     if difficulty==1:
                         ia_play=ia.ia_multichoice.ia(board,2)
                     if difficulty==2:
-                        ia_play=ia.ia_minimax.ia(board,2)
+                        ia_play=ia.ia_hard.ia(board,2)
                     board[ia_play]=2
                     cercle_save.append(ia_play)
                     signe_save=1
