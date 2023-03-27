@@ -1,5 +1,5 @@
               
-def minimax(plateau, signe_actuel,signe_gagnant,depth):
+def minimax(plateau, signe_actuel,signe_gagnant,depth,alpha,beta):
     if test_winning(plateau,signe_gagnant)!="vide":
         return test_winning(plateau,signe_gagnant)
     
@@ -9,11 +9,14 @@ def minimax(plateau, signe_actuel,signe_gagnant,depth):
             if plateau[i] ==0:
                 plateau[i]=signe_actuel
                 if signe_actuel==1:
-                    eval=minimax(plateau,signe_actuel+1, signe_gagnant,depth+1)
+                    eval=minimax(plateau,signe_actuel+1, signe_gagnant,depth+1,alpha,beta)
                 else:
-                    eval=minimax(plateau,signe_actuel-1, signe_gagnant,depth+1)
-                maxEval = max(maxEval,eval)    
+                    eval=minimax(plateau,signe_actuel-1, signe_gagnant,depth+1,alpha,beta)
+                maxEval = max(maxEval,eval)  
                 plateau[i]=0
+            alpha=max(alpha,maxEval)  
+            if beta<=alpha:
+                break
         return maxEval
     else:
         minEval=50
@@ -21,11 +24,14 @@ def minimax(plateau, signe_actuel,signe_gagnant,depth):
             if plateau[i] ==0:
                 plateau[i]=signe_actuel
                 if signe_actuel==1:
-                    eval=minimax(plateau,signe_actuel+1,signe_gagnant,depth+1)
+                    eval=minimax(plateau,signe_actuel+1,signe_gagnant,depth+1,alpha,beta)
                 else:
-                    eval=minimax(plateau,signe_actuel-1,signe_gagnant,depth+1)
+                    eval=minimax(plateau,signe_actuel-1,signe_gagnant,depth+1,alpha,beta)
                 minEval = min(minEval,eval)
                 plateau[i]=0
+            beta=min(beta,minEval)  
+            if beta<=alpha:
+                break
         return minEval
 
 
@@ -37,9 +43,9 @@ def ia(board,signe):
         if board[i] ==0:
             board[i]=signe
             if signe==1:
-                best_move=minimax(board,signe+1,signe,0)
+                best_move=minimax(board,signe+1,signe,0,-50,50)
             else:
-                best_move=minimax(board,signe-1,signe,0)
+                best_move=minimax(board,signe-1,signe,0,-50,50)
             board[i]=0
             if best_move>play_move:
                 play_move=best_move
